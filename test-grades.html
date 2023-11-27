@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>صفحة درجات الاختبار</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    
+    header {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 20px;
+            text-align: center;
+        }
+
+    h1 {
+      color: #000000;
+    }
+    h2 {
+      color: #000000;
+    }
+    ol {
+      margin-bottom: 20px;
+      text-align: left; /* Adjusted to left-align the numbers */
+      padding-left: 0; /* Remove default padding for the list */
+    }
+
+    li {
+      margin-bottom: 10px;
+      font-size: 18px; /* Increased font size */
+    }
+    
+    nav {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+
+    a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    button {
+      background-color: #000000;
+      color: hsl(0, 0%, 0%);
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #000000;
+    }
+
+    section {
+            padding: 40px;
+            text-align: center;
+        }
+
+    p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #000000;
+        }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #000000;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .grade {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>صفحة درجات الامتحانات</h1>
+</header>
+<nav>
+  <a href="school.html" target="_blank">الصفحة الرئيسية</a> |
+  <a href="about us.html" target="_blank">نبذة عنا</a> |
+  <a href="courses.html" target="_blank">المجاميع</a> |
+  <a href="contact us.html" target="_blank">اتصل بنا</a> |
+  <a href="gallery.html" target="_blank">معرض الصور</a> |
+  <a href="decs.html" target="_blank">الامتحانات</a> |
+  <a href="test-grades.html" target="_blank">درجات الامتحانات</a> |
+  <a href="school handbook.html" target="_blank">دليل المدرسة</a> |
+  <a href="school registration.html" target="_blank">شروط التقديم</a> |
+  <a href="news.html" target="_blank">الأخبار</a>
+</nav>
+
+  <h2>تصفية درجات الاختبار</h2>
+  <form id="searchForm">
+    <label for="searchName">الاسم الثلاثي:</label>
+    <input type="text" id="searchName" name="searchName" oninput="filterGrades()"><br>
+
+    <label for="searchNumber">رقم الجلوس:</label>
+    <input type="text" id="searchNumber" name="searchNumber" oninput="filterGrades()"><br>
+  </form>
+
+  <table id="gradesTable">
+    <thead>
+      <tr>
+        <th>اسم الطالب</th>
+        <th>رقم الجلوس</th>
+        <th>درجة الاختبار</th>
+      </tr>
+    </thead>
+    <tbody id="gradesBody">
+      <!-- ستظهر درجات الاختبار هنا -->
+    </tbody>
+  </table>
+
+  <script>
+    // بيانات تجريبية لدرجات الاختبار
+    const testGradesData = [
+      { name: "محمد علي الشريف", number: "123", grade: "100%" },
+      { name: "فاطمة حسين مصطفى", number: "456", grade: "100%" },
+      { name: "عمر أحمد الخطيب", number: "123", grade: "100%" },
+      { name: "ليلى محمد الحسن", number: "456", grade: "100%" },
+      { name: "يوسف عبد الرحمن الفاروق", number: "123", grade: "100%" },
+      { name: "نورا عادل عبد المجيد", number: "456", grade: "100%" },
+      { name: "أحمد حسن السيد", number: "123", grade: "100%" },
+      { name: "سلمى خالد عبد العزيز", number: "456", grade: "100%" },
+      { name: "علياء أحمد الصاوي", number: "123", grade: "100%" },
+      { name: "حسام مصطفى إبراهيم", number: "456", grade: "100%" },
+      { name: "مريم علي رضا", number: "123", grade: "100%" },
+      { name: "مصطفى حسن الطاهر", number: "456", grade: "100%" },
+      { name: "حنان محمد عبد الرازق", number: "123", grade: "100%" },
+      { name: "خالد علي محمد", number: "456", grade: "100%" },
+      { name: "ريما ناصر الدين", number: "123", grade: "100%" },
+      { name: "أحمد صالح العتيبي", number: "456", grade: "100%" },
+      { name: "سارة جمال الدين", number: "123", grade: "100%" },
+      { name: "ياسر محمد الشهابي", number: "456", grade: "100%" },
+      { name: "نور حسن العلي", number: "123", grade: "100%" },
+      { name: "رامي مصطفى البغدادي", number: "456", grade: "100%" },
+      { name: "لطيفة عبد الحكيم علي", number: "123", grade: "100%" },
+      { name: "عمر ناصر حسين", number: "456", grade: "100%" },
+      { name: "حنين محمد الغرباوي", number: "123", grade: "100%" },
+      { name: "حنين محمد الغرباوي", number: "456", grade: "100%" },
+      { name: "فاطمة علي محمد", number: "123", grade: "100%" },
+      { name: "زكريا عبد الله السليمان", number: "456", grade: "100%" },
+      { name: "سلمان أحمد الفهري", number: "123", grade: "100%" },
+      { name: "أمل عادل البطاط", number: "456", grade: "100%" },
+      { name: "عبد الرحمن ناصر المالكي", number: "123", grade: "100%" },
+      { name: "هالة أحمد الشامي", number: "456", grade: "100%" },
+      { name: "ماجد خالد العقيل", number: "123", grade: "100%" },
+      { name: "لينا مصطفى الجندي", number: "456", grade: "100%" },
+      { name: "جميلة حسن مصطفى", number: "123", grade: "100%" },
+      { name: "محمود رياض العوضي", number: "456", grade: "100%" },
+      { name: "هدير عادل حسن", number: "123", grade: "100%" },
+      { name: "أحمد جمال الدين", number: "456", grade: "100%" },
+      { name: "رشا عمر الخطيب", number: "123", grade: "100%" },
+      { name: "وليد فاروق المصري", number: "456", grade: "100%" },
+      { name: "سمية محمد حسن", number: "123", grade: "100%" },
+      { name: "إيمان حسن الجمل", number: "456", grade: "100%" },
+      { name: "ياسمين عادل السيد", number: "123", grade: "100%" },
+      { name: "خليل حسن العربي", number: "456", grade: "100%" },
+      { name: "ندى أحمد الشرقاوي", number: "123", grade: "100%" },
+      { name: "علي رضا عبد الله", number: "456", grade: "100%" },
+      { name: "لمى حسين محمد", number: "123", grade: "100%" },
+      { name: "محمد طارق الغزالي", number: "456", grade: "100%" },
+      { name: "ريهام عمر الحسن", number: "123", grade: "100%" },
+      { name: "حسين أحمد الخولي", number: "456", grade: "100%" },
+      { name: "سهى ناصر محمد", number: "123", grade: "100%" },
+      { name: "إيهاب رمضان العبد", number: "456", grade: "100%" },
+      { name: "ليلى علي محمود", number: "123", grade: "100%" },
+      { name: "حسين مصطفى حسين", number: "456", grade: "100%" },
+      { name: "نورهان محمد عبد العزيز", number: "123", grade: "100%" },
+      { name: "علياء عادل الصاوي", number: "456", grade: "100%" },
+      { name: "سامي محمد الحسن", number: "123", grade: "100%" },
+      { name: "هند رضا علي", number: "456", grade: "100%" },
+      { name: "أحمد عمر الزهراني", number: "123", grade: "100%" },
+      { name: "زينب محمد صلاح", number: "456", grade: "100%" },
+      { name: "خالد مصطفى الجابري", number: "123", grade: "100%" },
+      { name: "سهى رامي السلاموني", number: "456", grade: "100%" },
+      // أضف المزيد من درجات الاختبار حسب الحاجة
+    ];
+
+    // دالة لتصفية درجات الاختبار بناءً على تطابق دقيق لقيم الإدخال
+    function filterGrades() {
+      const searchName = document.getElementById("searchName").value.toLowerCase();
+      const searchNumber = document.getElementById("searchNumber").value.toLowerCase();
+
+      const filteredGrades = testGradesData.filter(testGrade => {
+        const gradeName = testGrade.name.toLowerCase();
+        const gradeNumber = testGrade.number.toLowerCase();
+
+        return gradeName === searchName && gradeNumber === searchNumber;
+      });
+
+      displayGrades(filteredGrades);
+    }
+
+    // دالة لعرض درجات الاختبار بتنسيق يشبه الجدول
+    function displayGrades(testGrades) {
+      const gradesBody = document.getElementById("gradesBody");
+      gradesBody.innerHTML = "";
+
+      testGrades.forEach(testGrade => {
+        const gradeRow = document.createElement("tr");
+        gradeRow.className = "grade";
+
+        const nameCell = document.createElement("td");
+        nameCell.textContent = testGrade.name;
+
+        const numberCell = document.createElement("td");
+        numberCell.textContent = testGrade.number;
+
+        const gradeCell = document.createElement("td");
+        gradeCell.textContent = testGrade.grade;
+
+        gradeRow.appendChild(nameCell);
+        gradeRow.appendChild(numberCell);
+        gradeRow.appendChild(gradeCell);
+
+        gradesBody.appendChild(gradeRow);
+      });
+
+      // إظهار درجات الاختبار المخفية
+      showHiddenGrades();
+    }
+
+    // دالة لإظهار درجات الاختبار المخفية
+    function showHiddenGrades() {
+      const hiddenGrades = document.querySelectorAll(".grade");
+      hiddenGrades.forEach(grade => {
+        grade.style.display = "table-row";
+      });
+    }
+  </script>
+</body>
+</html>
